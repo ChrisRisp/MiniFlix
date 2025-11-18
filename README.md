@@ -8,8 +8,28 @@ A DIY Netflix experiment looking at edge-adaptive streaming techniques and explo
 
 A couple of forward-looking TODOs
 
+## 🏁 Getting Started
 
-## 🎬 Streaming Pipeline
+Straight forward to run:
+
+`docker compose build` 
+
+`docker compose up`
+
+
+### **RTMP (miniflix-rtmp)**
+Ingest server running NGINX-RTMP. Accepts live video at `rtmp://localhost/live/stream` and forwards it to the packager.
+
+### **Packager (miniflix-packager)**
+FFmpeg-based transcoder that converts the RTMP stream into HLS segments and a playlist, writing them into the shared `media` volume.
+
+### **Origin (miniflix-origin)**
+NGINX web server that serves the MiniFlix web player and the generated HLS content at `http://localhost:8080/hls/rtmp.m3u8`.
+
+## ⏩ Forward-looking TODOs
+--- 
+
+### 🎬 Streaming Pipeline
 
 - [x] Finalize packager `run.sh` with stable RTMP → HLS handling  
 - [ ] Ensure “cold start” HLS creation is reliable after start/stop  
@@ -20,7 +40,7 @@ A couple of forward-looking TODOs
 
 ---
 
-## 🌐 Web Player 
+### 🌐 Web Player 
 
 - [ ] Implement light→dark red→black gradient background  
 - [ ] Add per-session cache-busting logic  
@@ -28,7 +48,7 @@ A couple of forward-looking TODOs
 
 ---
 
-## 🌐 Network Simulation (Mininet)
+### 🌐 Network Simulation (Mininet)
 
 - [ ] Add example `miniflix_basic.py` topology  
 - [ ] Add topology with multiple origins and failover routing  
@@ -39,7 +59,7 @@ A couple of forward-looking TODOs
 
 ---
 
-## 🧪   Netflix-esque Algorithms (Research & Sim)
+### 🧪   Netflix-esque Algorithms (Research & Sim)
 
 - [ ] Implement **BOLA** (Buffer Occupancy–based Lyapunov Algorithm) inside the MiniFlix HLS.js player  
 - [ ] Implement **BBA** (Buffer-Based Adaptation) as an alternative ABR strategy  
@@ -47,7 +67,7 @@ A couple of forward-looking TODOs
 
 ---
 
-## 📉 Load Testing
+### 📉 Load Testing
 - [ ] Add script to stress-test origin container
 - [ ] Capture metrics: rebuffering, HLS latency, segment availability
 - [ ] graphs for ABR decisions
