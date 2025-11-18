@@ -1,0 +1,48 @@
+version: "3.9"
+
+name: miniflix
+
+services:
+  rtmp:
+    image: tiangolo/nginx-rtmp:latest
+    container_name: miniflix-rtmp
+    ports:
+      - "1935:1935"           # RTMP ingest from host: rtmp://localhost/live/stream
+    networks:
+      - miniflix_net
+
+  packager:
+    build:
+      context: ./src/packager  # contains Dockerfile + run.sh
+    container_name: miniflix-packager
+    environment:
+      RTMP_INPUT: rtmp://rtmp/live/stream   # RTMP from rtmp service
+      HLS_OUT: /var/media/hls               # where HLS gets written
+    depends_on:
+      - rtmp
+    volumes:
+      - media:/var/media                    # shared volume with origin
+    networks:
+      - miniflix_net
+    restart: always                         # keep packager alive
+
+  origin:
+    build:
+      context: ./src/origin
+      dockerfile: Dockerfile
+    container_name: miniflix-origin
+    ports:
+      - "8080:80"
+    depends_on:
+      - packager
+    volumes:
+      - media:/var/media
+    networks:
+      - miniflix_net
+    restart: always
+
+volumes:
+  media:
+
+networks:
+  miniflix_net:

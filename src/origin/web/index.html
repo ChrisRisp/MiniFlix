@@ -48,6 +48,19 @@ h1 {
 @keyframes fadein {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
+
+#player-container {
+  width: 640px;       /* or 720px or whatever */
+  margin: 40px auto;  /* center on page */
+}
+
+#video {
+  width: 100%;
+  height: auto;
+  background: #000;
+  border-radius: 8px;
+}
+
 }
 </style>
 </head>
@@ -55,7 +68,9 @@ h1 {
   <div class="logo">
   <img src="miniflix.png" alt="MiniFlix Logo">
   </div>
-  <video id="video" controls></video>
+  <div id="player-container">
+    <video id="video" controls></video>
+  </div>
 
   <div class="row">
     <p>RTMP ingest: <code>rtmp://localhost/live/in</code></p>
@@ -64,17 +79,23 @@ h1 {
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
-    const url = '/hls/rtmp.m3u8';
+    const baseUrl = '/hls/rtmp.m3u8';
+    const url = baseUrl + '?t=' + Date.now(); // cache-buster
+
     const video = document.getElementById('video');
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = url;
-    } else if (Hls.isSupported()) {
-      const hls = new Hls({ liveDurationInfinity: true });
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        liveSyncDuration: 2,         // try to stay ~2s behind live
+        liveMaxLatencyDuration: 4,   // don’t drift too far back
+        maxLiveSyncPlaybackRate: 1.1 // slightly speed up if we fall behind
+      });
+
       hls.loadSource(url);
       hls.attachMedia(video);
-    } else {
-      alert('HLS not supported in this browser.');
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
     }
-  </script>
+ </script>
 </body>
 </html>
