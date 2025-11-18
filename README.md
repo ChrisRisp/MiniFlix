@@ -39,6 +39,14 @@ A couple of forward-looking TODOs
 
 ---
 
+## 🧪   Netflix-esque Algorithms (Research & Sim)
+
+- [ ] Implement **BOLA** (Buffer Occupancy–based Lyapunov Algorithm) inside the MiniFlix HLS.js player  
+- [ ] Implement **BBA** (Buffer-Based Adaptation) as an alternative ABR strategy  
+- [ ] Add an ABR comparison mode: BOLA vs BBA  
+
+---
+
 ## 📉 Load Testing
 - [ ] Add script to stress-test origin container
 - [ ] Capture metrics: rebuffering, HLS latency, segment availability
