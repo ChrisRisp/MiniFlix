@@ -25,6 +25,9 @@ class MiniFlixTopo(Topo):
                            subnet=subnet)
         self.addLink(nat, s1)
 
+        nat.cmd("iptables -A FORWARD -i s1-eth0 -j ACCEPT")
+        nat.cmd("iptables -A FORWARD -o s1-eth0 -j ACCEPT")
+
         # Bad network client
         h1 = self.addHost('h1',
                           ip='10.0.0.11/24',
